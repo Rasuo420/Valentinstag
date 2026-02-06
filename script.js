@@ -1,3 +1,6 @@
+// =====================
+// AUDIO SETUP
+// =====================
 let audioStarted = false;
 
 const vinylStart = document.getElementById("vinylStart");
@@ -10,19 +13,17 @@ typeSound.volume = 0.12;
 vinylStart.volume = 0.8;
 vinylStop.volume = 0.8;
 
-
+// =====================
+// DIALOG DATA
+// =====================
 const dialog = [
   {
     text: "Hey du… ja genau du 👀",
-    buttons: [
-      { label: "Okay?", next: 1 }
-    ]
+    buttons: [{ label: "Okay?", next: 1 }]
   },
   {
     text: "Wie ich sehe, hat der QR-Code funktioniert 😏",
-    buttons: [
-      { label: "Sehr gut!", next: 2 }
-    ]
+    buttons: [{ label: "Sehr gut!", next: 2 }]
   },
   {
     text: "Ich wette, du fragst dich, was hier gerade passiert.",
@@ -33,42 +34,53 @@ const dialog = [
   },
   {
     text: "Verständlich. Bleib kurz bei mir 🖤",
-    buttons: [
-      { label: "Okay", next: 5 }
-    ]
+    buttons: [{ label: "Okay", next: 5 }]
   },
   {
     text: "Mutig. Dann schauen wir mal 😌",
-    buttons: [
-      { label: "Weiter", next: 5 }
-    ]
+    buttons: [{ label: "Weiter", next: 5 }]
   },
   {
     text: "Gut. Dann lass uns anfangen.",
-    buttons: [
-      { label: "Ich bin bereit ❤️", next: null }
-    ]
+    buttons: [{ label: "Ich bin bereit ❤️", next: null }]
   }
 ];
 
-
+// =====================
+// STATE + ELEMENTS
+// =====================
 let currentStep = 0;
 
-const dialogEl= document.getElementById("dialog");
-const buttonsEl= document.getElementById("buttons");
+const dialogEl = document.getElementById("dialog");
+const buttonsEl = document.getElementById("buttons");
 
-
-   function typeText(text, element, speed = 35) {
+// =====================
+// TYPING EFFECT
+// =====================
+function typeText(text, element, speed = 35) {
   element.textContent = "";
   let i = 0;
 
   const interval = setInterval(() => {
     element.textContent += text[i];
+
+    // 🔊 Typing-Sound (nur Buchstaben)
+    if (
+      audioStarted &&
+      /[a-zA-ZäöüÄÖÜ]/.test(text[i])
+    ) {
+      typeSound.currentTime = 0;
+      typeSound.play().catch(() => {});
+    }
+
     i++;
     if (i >= text.length) clearInterval(interval);
   }, speed);
 }
 
+// =====================
+// RENDER DIALOG STEP
+// =====================
 function renderStep(index) {
   const step = dialog[index];
   buttonsEl.innerHTML = "";
@@ -81,17 +93,17 @@ function renderStep(index) {
 
     button.onclick = () => {
 
-      // 🔊 Audio nur beim ALLERERSTEN Klick starten
+      // 🎵 Audio beim ersten Klick starten
       if (!audioStarted) {
         audioStarted = true;
 
         vinylStart.play().catch(() => {});
         setTimeout(() => {
           music.play().catch(() => {});
-        }, 900); // ggf. an Vinyl-Sound anpassen
+        }, 900);
       }
 
-      // 👉 Nächster Dialog
+      // ➡️ nächster Dialog
       if (btn.next !== null) {
         renderStep(btn.next);
       }
@@ -101,22 +113,7 @@ function renderStep(index) {
   });
 }
 
-function typeText(text, element, speed = 35 ) {
-    element.textContent = "";
-    let i = 0;
-
-    const interval = setInterval(() => {
-        element.textContent += text[i];
-        
-        if (
-            audioStarted &&
-            /[a-zA-ZäöüÄÖÜ]/.test(text[i])
-        ) {
-            typeSound.currentTime = 0;
-            typeSound.play().catch(() => {});
-        }
-
-        i++
-        if(i >= text.length) clearInterval(inverval);
-    }, speed);
-}
+// =====================
+// START
+// =====================
+renderStep(currentStep);
