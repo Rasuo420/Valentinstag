@@ -1,21 +1,11 @@
-// =====================
-// AUDIO SETUP
-// =====================
 let audioStarted = false;
 
 const vinylStart = document.getElementById("vinylStart");
-const vinylStop = document.getElementById("vinylStop");
 const music = document.getElementById("bgMusic");
-const typeSound = document.getElementById("typeSound");
 
 music.volume = 0.35;
-typeSound.volume = 0.12;
 vinylStart.volume = 0.8;
-vinylStop.volume = 0.8;
 
-// =====================
-// DIALOG DATA
-// =====================
 const dialog = [
   {
     text: "Hey du… ja genau du 👀",
@@ -46,42 +36,20 @@ const dialog = [
   }
 ];
 
-// =====================
-// STATE + ELEMENTS
-// =====================
-let currentStep = 0;
-
 const dialogEl = document.getElementById("dialog");
 const buttonsEl = document.getElementById("buttons");
 
-// =====================
-// TYPING EFFECT
-// =====================
-
-function typeText(text, element, speed = 35) {
+function typeText(text, element) {
   element.textContent = "";
   let i = 0;
 
   const interval = setInterval(() => {
     element.textContent += text[i];
-/*
-    // 🔊 Typing-Sound (nur Buchstaben)
-    if (
-      audioStarted &&
-      /[a-zA-ZäöüÄÖÜ]/.test(text[i])
-    ) {
-      typeSound.currentTime = 0;
-      typeSound.play().catch(() => {});
-    }
-*/
     i++;
     if (i >= text.length) clearInterval(interval);
-  }, speed);
+  }, 35);
 }
 
-// =====================
-// RENDER DIALOG STEP
-// =====================
 function renderStep(index) {
   const step = dialog[index];
   buttonsEl.innerHTML = "";
@@ -93,27 +61,12 @@ function renderStep(index) {
     button.textContent = btn.label;
 
     button.onclick = () => {
-
-      // 🎵 Audio beim ersten Klick starten
-    if (!audioStarted) {
+      if (!audioStarted) {
         audioStarted = true;
+        vinylStart.play().catch(() => {});
+        music.play().catch(() => {});
+      }
 
-  // alle Sounds einmal anfassen = Audio Context unlock
-          [vinylStart, music, typeSound].forEach(a => {
-            a.muted = true;
-            a.play().catch(() => {});
-            a.pause();
-            a.currentTime = 0;
-            a.muted = false;
-          });
-
-          vinylStart.play().catch(() => {});
-          setTimeout(() => {
-            music.play().catch(() => {});
-    }, 900);
-  }
-
-      // ➡️ nächster Dialog
       if (btn.next !== null) {
         renderStep(btn.next);
       }
@@ -123,7 +76,4 @@ function renderStep(index) {
   });
 }
 
-// =====================
-// START
-// =====================
-renderStep(currentStep);
+renderStep(0);
