@@ -1,0 +1,41 @@
+* {
+    box-sizing: border-box;
+    font-family: system-ui, -apple-systems, BlinkMacsystemFont, sans-serif;
+}
+body{
+    margin: 0;
+    background: #0e0e0e;
+    color: #fff;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#app  {
+    width: 100%;
+    max-width: 420px;
+    padding: 24px;
+    text-align: center;
+}
+
+#dialog {
+    font-size: 1.3rem;
+    margin-bottom: 24px;
+}
+
+#buttons button {
+    width: 100%;
+    padding: 14px;
+    margin: 8px 0;
+    font-size: 1.1rem;
+    border: none;
+    border-radius: 12px;
+    background: #e63946;
+    color: white;
+    cursor: pointer;
+}
+
+#buttons button:active {
+    transform: scale(0.97);
+}
