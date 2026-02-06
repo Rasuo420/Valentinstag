@@ -57,13 +57,14 @@ const buttonsEl = document.getElementById("buttons");
 // =====================
 // TYPING EFFECT
 // =====================
+
 function typeText(text, element, speed = 35) {
   element.textContent = "";
   let i = 0;
 
   const interval = setInterval(() => {
     element.textContent += text[i];
-
+/*
     // 🔊 Typing-Sound (nur Buchstaben)
     if (
       audioStarted &&
@@ -77,7 +78,7 @@ function typeText(text, element, speed = 35) {
     if (i >= text.length) clearInterval(interval);
   }, speed);
 }
-
+*/
 // =====================
 // RENDER DIALOG STEP
 // =====================
