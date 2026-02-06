@@ -94,14 +94,23 @@ function renderStep(index) {
     button.onclick = () => {
 
       // 🎵 Audio beim ersten Klick starten
-      if (!audioStarted) {
+    if (!audioStarted) {
         audioStarted = true;
 
-        vinylStart.play().catch(() => {});
-        setTimeout(() => {
-          music.play().catch(() => {});
-        }, 900);
-      }
+  // alle Sounds einmal anfassen = Audio Context unlock
+          [vinylStart, music, typeSound].forEach(a => {
+            a.muted = true;
+            a.play().catch(() => {});
+            a.pause();
+            a.currentTime = 0;
+            a.muted = false;
+          });
+
+          vinylStart.play().catch(() => {});
+          setTimeout(() => {
+            music.play().catch(() => {});
+    }, 900);
+  }
 
       // ➡️ nächster Dialog
       if (btn.next !== null) {
