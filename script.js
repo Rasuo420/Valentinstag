@@ -73,12 +73,12 @@ function typeText(text, element, speed = 35) {
       typeSound.currentTime = 0;
       typeSound.play().catch(() => {});
     }
-
+*/
     i++;
     if (i >= text.length) clearInterval(interval);
   }, speed);
 }
-*/
+
 // =====================
 // RENDER DIALOG STEP
 // =====================
