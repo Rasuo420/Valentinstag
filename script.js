@@ -45,24 +45,30 @@ const dialogEl= document.getElementById("dialog");
 const buttonsEl= document.getElementById("buttons");
 const music = document.getElementById("bgmusic");
 
-    function renderStep(index) {
+   function typeText(text, element, speed = 35) {
+  element.textContent = "";
+  let i = 0;
+
+  const interval = setInterval(() => {
+    element.textContent += text[i];
+    i++;
+    if (i >= text.length) clearInterval(interval);
+  }, speed);
+}
+
+function renderStep(index) {
   const step = dialog[index];
-  dialogEl.textContent = step.text;
   buttonsEl.innerHTML = "";
+
+  typeText(step.text, dialogEl);
 
   step.buttons.forEach(btn => {
     const button = document.createElement("button");
     button.textContent = btn.label;
 
     button.onclick = () => {
-      if (music.paused) {
-        music.volume = 0.4;
-        music.play().catch(() => {});
-      }
-
       if (btn.next !== null) {
-        currentStep = btn.next;
-        renderStep(currentStep);
+        renderStep(btn.next);
       }
     };
 
