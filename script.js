@@ -34,7 +34,7 @@ const dialog = [
   },
   {
     text: "Gut. Dann lass uns anfangen.",
-    buttons: [{ label: "Ich bin bereit ❤️", next: null }]
+    buttons: [{ label: "Ich bin bereit ❤️", next: "gift" }]
   }
 ];
 
@@ -92,7 +92,10 @@ function renderStep(index) {
         return;
       }
 
-      if (btn.next === null) return;
+      if (btn.next === "gift") {
+        startGift();
+        return;
+      }
 
       renderStep(btn.next);
     };
@@ -237,7 +240,44 @@ function showActorScreen() {
 
   document.body.appendChild(box);
 }
+function startGift() {
+  buttonsEl.innerHTML = "";
+  dialogEl.textContent = "Okay… dann ist es Zeit 😌";
 
+  const box = document.createElement("div");
+  box.className = "gift";
+
+  let clicks = 0;
+
+  const gift = document.createElement("div");
+  gift.className = "gift-box";
+  gift.textContent = "🎁";
+
+  const hint = document.createElement("p");
+  hint.textContent = "Mach es auf ❤️";
+
+  gift.onclick = () => {
+    clicks++;
+    gift.classList.add("shake");
+
+    if (clicks >= 5) {
+      showFinalScreen();
+    }
+  };
+
+  box.appendChild(gift);
+  box.appendChild(hint);
+  document.body.appendChild(box);
+}
+function showFinalScreen() {
+  document.body.innerHTML = `
+    <div class="final">
+      <h1>Happy Valentinstag ❤️</h1>
+      <p>Ich bin sehr froh, dass es dich gibt.</p>
+      <div class="hearts">💐💖🌸💖💐</div>
+    </div>
+  `;
+}
 /* =====================
    START
 ===================== */
