@@ -3,11 +3,16 @@ let questStep = 0;
 let questIntroText = "";
 
 const vinylStart = document.getElementById("vinylStart");
+const vinylStop = document.getElementById("vinylStop");
 const music = document.getElementById("bgMusic");
 
 vinylStart.volume = 0.8;
+vinylStop.volume = 0.8;
 music.volume = 0.35;
 
+/* =====================
+   DIALOG DATA
+===================== */
 const dialog = [
   {
     text: "Hey du… ja genau du 👀",
@@ -56,7 +61,7 @@ function typeText(text, element) {
 }
 
 /* =====================
-   DIALOG
+   DIALOG FLOW
 ===================== */
 function renderStep(index) {
   const step = dialog[index];
@@ -69,8 +74,7 @@ function renderStep(index) {
     button.textContent = btn.label;
 
     button.onclick = () => {
-
-      // 🔊 Audio nur beim ersten Klick
+      // 🔊 Musikstart beim ersten Klick
       if (!audioStarted) {
         audioStarted = true;
         vinylStart.currentTime = 0;
@@ -81,7 +85,6 @@ function renderStep(index) {
         }, 700);
       }
 
-      // 😈 MINI QUEST
       if (btn.next === "miniQuestSoft") {
         startMiniQuest("soft");
         return;
@@ -105,22 +108,19 @@ function renderStep(index) {
 }
 
 /* =====================
-   MINI QUEST FLOW
+   MINI QUEST
 ===================== */
 function startMiniQuest(mode) {
   questStep = 0;
-
   questIntroText =
     mode === "soft"
       ? "Dachte ich mir 😌 Dann spiel kurz mit mir."
       : "Ach ja? 😏 Dann lass uns das kurz testen.";
-
   showQuestStep();
 }
 
 function showQuestStep() {
   clearQuest();
-
   if (questStep === 0) showClosePopup();
   if (questStep === 1) showCaptcha();
   if (questStep === 2) showEscapeQuestion();
@@ -131,62 +131,47 @@ function clearQuest() {
   document.querySelectorAll(".quest").forEach(e => e.remove());
 }
 
-/* =====================
-   QUEST STEPS
-===================== */
 function showClosePopup() {
   const box = document.createElement("div");
   box.className = "quest";
-
-  box.innerHTML = `
-    <p>${questIntroText}</p>
-    <button>Okay 😌</button>
-  `;
-
+  box.innerHTML = `<p>${questIntroText}</p><button>Okay 😌</button>`;
   box.querySelector("button").onclick = () => {
     questStep++;
     showQuestStep();
   };
-
   document.body.appendChild(box);
 }
 
 function showCaptcha() {
   const items = [
-    { name: "Volvos", img: "volvo.png" },
-    { name: "Katzen1", img: "carlos.jpeg" },
-    { name: "Katzen2", img: "pablo.jpeg" },
-    { name: "Gitarren", img: "gitarre.avif" },
-    { name: "Rock am Ring", img: "rockamring.jfif" },
-    { name: "Felina", img: "felina.jpeg"},
-    { name: "Aquarius", img: "aquarius.jpg"},
-    { name: "Ich", img: "ich.jpeg" }
+    { img: "volvo.png" },
+    { img: "carlos.jpeg" },
+    { img: "pablo.jpeg" },
+    { img: "gitarre.avif" },
+    { img: "rockamring.jfif" },
+    { img: "felina.jpeg" },
+    { img: "aquarius.jpg" },
+    { img: "ich.jpeg" }
   ];
 
   let selected = new Set();
-
   const box = document.createElement("div");
   box.className = "quest captcha";
-
-  box.innerHTML = `<p>Wähle alles aus, was du magst 😌</p>`;
+  box.innerHTML = "<p>Wähle alles aus, was du magst 😌</p>";
 
   const grid = document.createElement("div");
   grid.className = "captcha-grid";
 
-  items.forEach(item => {
+  items.forEach((item, i) => {
     const card = document.createElement("div");
     card.className = "captcha-card";
-
     const img = document.createElement("img");
     img.src = item.img;
-    img.alt = item.name;
-
     card.appendChild(img);
 
     card.onclick = () => {
       card.classList.add("active");
-      selected.add(item.name);
-
+      selected.add(i);
       if (selected.size === items.length) {
         questStep++;
         showQuestStep();
@@ -203,124 +188,100 @@ function showCaptcha() {
 function showEscapeQuestion() {
   const box = document.createElement("div");
   box.className = "quest";
-
   box.innerHTML = `
     <p>In welchem Escape Room waren wir gemeinsam?</p>
     <button id="wrong">Da Vinci</button>
     <button id="right">Atlantis</button>
     <p id="hint"></p>
   `;
-
   box.querySelector("#wrong").onclick = () => {
     box.querySelector("#hint").textContent = "Hmm… fast 😌";
   };
-
   box.querySelector("#right").onclick = () => {
     questStep++;
     showQuestStep();
   };
-
   document.body.appendChild(box);
 }
 
 function showActorScreen() {
   const box = document.createElement("div");
   box.className = "quest";
-
   box.innerHTML = `
-    <img src="charlie.jfif" alt="Charlie Hunnam">
+    <img src="charlie.jfif">
     <p>Bonusfrage abgeschlossen 😏</p>
-    <button>Okay… ich bin bereit</button>
+    <button>Weiter</button>
   `;
-
   box.querySelector("button").onclick = () => {
     clearQuest();
     renderStep(5);
   };
-
   document.body.appendChild(box);
 }
 
-let rainInterval = null;
-
-function startValentineRain() {
-  rainInterval = setInterval(() => {
-    createFallingItem();
-  }, 300); // alle 300ms ein Teil
-}
-
-function stopValentineRain() {
-  clearInterval(rainInterval);
-}
-
-function createFallingItem() {
-  const item = document.createElement("div");
-  item.classList.add("fall");
-
-  // 🌸 oder ❤️ zufällig
-  const isHeart = Math.random() > 0.5;
-
-  item.classList.add(isHeart ? "heart" : "flower");
-  item.textContent = isHeart ? "❤️" : "🌸";
-
-  // Zufällige Position & Dauer
-  item.style.left = Math.random() * 100 + "vw";
-  item.style.animationDuration = 4 + Math.random() * 3 + "s";
-
-  document.body.appendChild(item);
-
-  // Aufräumen
-  item.addEventListener("animationend", () => {
-    item.remove();
-  });
-}
+/* =====================
+   GIFT + FAKE END
+===================== */
 function startGift() {
-  buttonsEl.innerHTML = "";
   dialogEl.textContent = "Okay… dann ist es Zeit 😌";
+  buttonsEl.innerHTML = "";
 
   const box = document.createElement("div");
   box.className = "gift";
 
   let clicks = 0;
-
   const gift = document.createElement("div");
   gift.className = "gift-box";
   gift.textContent = "🎁";
 
-  const hint = document.createElement("p");
-  hint.textContent = "Mach es auf ❤️";
-
   gift.onclick = () => {
     clicks++;
     gift.classList.add("shake");
-
-    if (clicks >= 5) {
-      showFinalScreen();
-    }
+    if (clicks >= 5) showFakeEnd();
   };
 
   box.appendChild(gift);
-  box.appendChild(hint);
   document.body.appendChild(box);
 }
-function showFinalScreen() {
-  document.body.innerHTML = `
-    <div class="final">
-      <h1>Happy Valentinstag ❤️</h1>
-      <p>Ich bin sehr froh, dass es dich gibt.</p>
-      <div class="hearts">💐💖🌸💖💐</div>
-    </div>
-  `;
+
+function showFakeEnd() {
+  vinylStop.currentTime = 0;
+  vinylStop.play().catch(() => {});
+
+  document.body.innerHTML = `<div class="blackout"></div>`;
+
+  setTimeout(() => {
+    music.currentTime = 0;
+    music.play().catch(() => {});
+    showValentineScreen();
+  }, 700);
 }
+
+/* =====================
+   FINAL SCREEN + RAIN
+===================== */
+let rainInterval;
+
 function showValentineScreen() {
   document.body.innerHTML = `
     <div class="valentine">
       <h1>Happy Valentinstag ❤️</h1>
-      <p>Ich bin froh, dass es dich gibt.</p>
+      <p>Ich bin sehr froh, dass es dich gibt.</p>
     </div>
   `;
+  startRain();
+}
 
-  startValentineRain();
+function startRain() {
+  rainInterval = setInterval(() => {
+    const el = document.createElement("div");
+    el.className = Math.random() > 0.5 ? "heart" : "flower";
+    el.textContent = el.className === "heart" ? "❤️" : "🌸";
+    el.style.left = Math.random() * 100 + "vw";
+    el.style.animationDuration = 4 + Math.random() * 3 + "s";
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), 8000);
+  }, 300);
 }
 
 /* =====================
