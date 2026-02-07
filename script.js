@@ -66,7 +66,6 @@ function typeText(text, element) {
 function renderStep(index) {
   const step = dialog[index];
   buttonsEl.innerHTML = "";
-
   typeText(step.text, dialogEl);
 
   step.buttons.forEach(btn => {
@@ -74,14 +73,14 @@ function renderStep(index) {
     button.textContent = btn.label;
 
     button.onclick = () => {
-      // 🔊 Musikstart beim ersten Klick
+
+      // 🔊 Start music once
       if (!audioStarted) {
         audioStarted = true;
         vinylStart.currentTime = 0;
-        vinylStart.play().catch(() => {});
+        vinylStart.play().catch(()=>{});
         setTimeout(() => {
-          music.currentTime = 0;
-          music.play().catch(() => {});
+          music.play().catch(()=>{});
         }, 700);
       }
 
@@ -134,7 +133,10 @@ function clearQuest() {
 function showClosePopup() {
   const box = document.createElement("div");
   box.className = "quest";
-  box.innerHTML = `<p>${questIntroText}</p><button>Okay 😌</button>`;
+  box.innerHTML = `
+    <p>${questIntroText}</p>
+    <button>Okay 😌</button>
+  `;
   box.querySelector("button").onclick = () => {
     questStep++;
     showQuestStep();
@@ -144,14 +146,9 @@ function showClosePopup() {
 
 function showCaptcha() {
   const items = [
-    { img: "volvo.png" },
-    { img: "carlos.jpeg" },
-    { img: "pablo.jpeg" },
-    { img: "gitarre.avif" },
-    { img: "rockamring.jfif" },
-    { img: "felina.jpeg" },
-    { img: "aquarius.jpg" },
-    { img: "ich.jpeg" }
+    "volvo.png","carlos.jpeg","pablo.jpeg",
+    "gitarre.avif","rockamring.jfif",
+    "felina.jpeg","aquarius.jpg","ich.jpeg"
   ];
 
   let selected = new Set();
@@ -162,22 +159,19 @@ function showCaptcha() {
   const grid = document.createElement("div");
   grid.className = "captcha-grid";
 
-  items.forEach((item, i) => {
+  items.forEach(imgName => {
     const card = document.createElement("div");
     card.className = "captcha-card";
-    const img = document.createElement("img");
-    img.src = item.img;
-    card.appendChild(img);
+    card.innerHTML = `<img src="${imgName}">`;
 
     card.onclick = () => {
       card.classList.add("active");
-      selected.add(i);
+      selected.add(imgName);
       if (selected.size === items.length) {
         questStep++;
         showQuestStep();
       }
     };
-
     grid.appendChild(card);
   });
 
@@ -210,7 +204,7 @@ function showActorScreen() {
   box.innerHTML = `
     <img src="charlie.jfif">
     <p>Bonusfrage abgeschlossen 😏</p>
-    <button>Weiter</button>
+    <button>Weiter ❤️</button>
   `;
   box.querySelector("button").onclick = () => {
     clearQuest();
@@ -220,11 +214,13 @@ function showActorScreen() {
 }
 
 /* =====================
-   GIFT + FAKE END
+   GIFT + VINYL STOP
 ===================== */
 function startGift() {
-  dialogEl.textContent = "Okay… dann ist es Zeit 😌";
+  dialogEl.textContent = "";
   buttonsEl.innerHTML = "";
+
+  document.querySelectorAll(".gift").forEach(e => e.remove());
 
   const box = document.createElement("div");
   box.className = "gift";
@@ -237,24 +233,18 @@ function startGift() {
   gift.onclick = () => {
     clicks++;
     gift.classList.add("shake");
-    if (clicks >= 5) showFakeEnd();
+
+    if (clicks >= 5) {
+      music.pause();
+      vinylStop.currentTime = 0;
+      vinylStop.play().catch(()=>{});
+
+      setTimeout(showFinalScreen, 900);
+    }
   };
 
   box.appendChild(gift);
   document.body.appendChild(box);
-}
-
-function showFakeEnd() {
-  vinylStop.currentTime = 0;
-  vinylStop.play().catch(() => {});
-
-  document.body.innerHTML = `<div class="blackout"></div>`;
-
-  setTimeout(() => {
-    music.currentTime = 0;
-    music.play().catch(() => {});
-    showValentineScreen();
-  }, 700);
 }
 
 /* =====================
@@ -262,25 +252,25 @@ function showFakeEnd() {
 ===================== */
 let rainInterval;
 
-function showValentineScreen() {
+function showFinalScreen() {
   document.body.innerHTML = `
-    <div class="valentine">
+    <div class="final">
       <h1>Happy Valentinstag ❤️</h1>
-      <p>Ich bin sehr froh, dass es dich gibt.</p>
+      <p>Ich bin unglaublich froh, dass es dich gibt.</p>
     </div>
   `;
-  startRain();
+  startValentineRain();
 }
 
-function startRain() {
+function startValentineRain() {
   rainInterval = setInterval(() => {
     const el = document.createElement("div");
-    el.className = Math.random() > 0.5 ? "heart" : "flower";
-    el.textContent = el.className === "heart" ? "❤️" : "🌸";
+    el.className = "fall";
+    el.textContent = Math.random() > 0.5 ? "❤️" : "🌸";
     el.style.left = Math.random() * 100 + "vw";
     el.style.animationDuration = 4 + Math.random() * 3 + "s";
     document.body.appendChild(el);
-    setTimeout(() => el.remove(), 8000);
+    el.addEventListener("animationend", () => el.remove());
   }, 300);
 }
 
