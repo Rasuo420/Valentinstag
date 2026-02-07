@@ -19,7 +19,7 @@ const dialog = [
     text: "Ich wette, du fragst dich, was hier gerade passiert.",
     buttons: [
       { label: "Ja", next: 3 },
-      { label: "Nein", next: 4 }
+      { label: "Nein", next: "pupupGame" }
     ]
   },
   {
