@@ -155,8 +155,8 @@ function showCaptcha() {
     { name: "Katzen2", img: "pablo.jpeg" },
     { name: "Gitarren", img: "gitarre.avif" },
     { name: "Rock am Ring", img: "rockamring.jfif" },
-    {name: "Felina", img: "felina.jpeg"},
-    {name: "Aquarius", img: "aquarius.jpg"},
+    { name: "Felina", img: "felina.jpeg"},
+    { name: "Aquarius", img: "aquarius.jpg"},
     { name: "Ich", img: "ich.jpeg" }
   ];
 
