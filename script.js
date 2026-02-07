@@ -156,7 +156,8 @@ function showCaptcha() {
     { name: "Gitarren", img: "gitarre.avif" },
     { name: "Rock am Ring", img: "rockamring.jfif" },
     {name: "Felina", img: "felina.jpeg"},
-    { name: "Ich", img: "ich.jpeg }
+    {name: "Aquarius", img: "aquarius.jpg"},
+    { name: "Ich", img: "ich.jpeg" }
   ];
 
   let selected = new Set();
