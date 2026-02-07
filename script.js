@@ -149,11 +149,13 @@ function showClosePopup() {
 
 function showCaptcha() {
   const items = [
-    { name: "Volvos", img: "images/volvo.jpg" },
-    { name: "Katzen", img: "images/katzen.jpg" },
-    { name: "Gitarren", img: "images/gitarre.jpg" },
-    { name: "Rock am Ring", img: "images/rockamring.jpg" },
-    { name: "Yoga", img: "images/yoga.jpg" }
+    { name: "Volvos", img: "volvo.png" },
+    { name: "Katzen1", img: "carlos.jpeg" },
+    { name: "Katzen2", img: "pablo.jpeg" },
+    { name: "Gitarren", img: "gitarre.avif" },
+    { name: "Rock am Ring", img: "rockamring.jfif" },
+    {name : "Luca", img: "ich.jpeg"}
+    
   ];
 
   let selected = new Set();
@@ -229,7 +231,7 @@ function showActorScreen() {
   box.className = "quest";
 
   box.innerHTML = `
-    <img src="images/charlie.jpg" alt="Charlie Hunnam">
+    <img src="charlie.jfif" alt="Charlie Hunnam">
     <p>Bonusfrage abgeschlossen 😏</p>
     <button>Okay… ich bin bereit</button>
   `;
