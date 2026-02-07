@@ -19,7 +19,7 @@ const dialog = [
     text: "Ich wette, du fragst dich, was hier gerade passiert.",
     buttons: [
       { label: "Ja", next: 3 },
-      { label: "Nein", next: "pupupGame" }
+      { label: "Nein", next: "popupGame" }
     ]
   },
   {
@@ -62,21 +62,26 @@ function renderStep(index) {
 
     button.onclick = () => {
 
-      // 🔊 AUDIO: NUR beim allerersten Klick
+      // 🔊 AUDIO – nur beim ersten Klick
       if (!audioStarted) {
         audioStarted = true;
 
         vinylStart.currentTime = 0;
         vinylStart.play().catch(() => {});
 
-        // kleine Vinyl-Verzögerung
         setTimeout(() => {
           music.currentTime = 0;
           music.play().catch(() => {});
         }, 700);
       }
 
-      // 👉 letzter Schritt (noch kein Stop, nur Ende)
+      // 😈 Popup-Game
+      if (btn.next === "popupGame") {
+        startPopupGame();
+        return;
+      }
+
+      // 👉 letzter Dialog
       if (btn.next === null) {
         return;
       }
@@ -87,6 +92,35 @@ function renderStep(index) {
 
     buttonsEl.appendChild(button);
   });
+}
+
+// 😈 MINI-GAME: Popups wegklicken
+function startPopupGame() {
+  let remaining = 5;
+
+  for (let i = 0; i < 5; i++) {
+    const popup = document.createElement("div");
+    popup.className = "popup";
+    popup.textContent = "Okay… dann klick mich weg 😅";
+
+    popup.style.left = Math.random() * 70 + "vw";
+    popup.style.top = Math.random() * 70 + "vh";
+
+    const close = document.createElement("button");
+    close.textContent = "✖";
+
+    close.onclick = () => {
+      popup.remove();
+      remaining--;
+
+      if (remaining === 0) {
+        renderStep(5);
+      }
+    };
+
+    popup.appendChild(close);
+    document.body.appendChild(popup);
+  }
 }
 
 // 🚀 Start
