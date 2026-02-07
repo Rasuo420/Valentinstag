@@ -3,12 +3,12 @@ let questStep = 0;
 let questIntroText = "";
 
 const vinylStart = document.getElementById("vinylStart");
-const vinylStop  = document.getElementById("vinylStop");
 const music      = document.getElementById("bgMusic");
+const vinylStop  = document.getElementById("vinylStop");
 
 vinylStart.volume = 0.8;
-vinylStop.volume  = 0.8;
 music.volume      = 0.35;
+vinylStop.volume  = 0.8;
 
 /* =====================
    DIALOG DATA
@@ -234,13 +234,11 @@ function startGift() {
     clicks++;
     gift.classList.add("shake");
 
-    if (clicks >= 5) {
-      music.pause();
-      vinylStop.currentTime = 0;
-      vinylStop.play().catch(()=>{});
-
-      setTimeout(showFinalScreen, 900);
-    }
+   if (clicks === 5) {
+  vinylStop.currentTime = 0;
+  vinylStop.play().catch(() => {});
+  setTimeout(showFinalScreen, 500);
+}
   };
 
   box.appendChild(gift);
@@ -253,12 +251,15 @@ function startGift() {
 let rainInterval;
 
 function showFinalScreen() {
+  document.body.className = "valentine-body";
+
   document.body.innerHTML = `
     <div class="final">
       <h1>Happy Valentinstag ❤️</h1>
-      <p>Ich bin unglaublich froh, dass es dich gibt.</p>
+      <p>Ich bin sehr froh, dass es dich gibt.</p>
     </div>
   `;
+
   startValentineRain();
 }
 
