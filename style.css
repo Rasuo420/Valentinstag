@@ -1,3 +1,6 @@
+/* =====================
+   GLOBAL
+===================== */
 * {
   box-sizing: border-box;
   font-family: system-ui, sans-serif;
@@ -8,11 +11,17 @@ body {
   min-height: 100vh;
   background: radial-gradient(circle at top, #1c1c1c, #000);
   color: #fff;
+
   display: flex;
   justify-content: center;
   align-items: center;
+
+  overflow-x: hidden;
 }
 
+/* =====================
+   GAME
+===================== */
 #game {
   text-align: center;
   max-width: 90vw;
@@ -33,76 +42,27 @@ body {
   color: #fff;
   font-size: 1rem;
   cursor: pointer;
+  transition: transform 0.15s ease, background 0.2s;
 }
-.gift {
-  position: fixed;
-  inset: 0;
-}
-
-.heart {
-  position: absolute;
-  font-size: 40px;
-  cursor: pointer;
-  animation: float 2s infinite alternate;
-}
-
-@keyframes float {
-  from { transform: translateY(0); }
-  to { transform: translateY(-10px); }
-}
-
-.scratch-wrapper {
-  height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #111;
-}
-
-.prize {
-  position: absolute;
-  text-align: center;
-  color: white;
-}
-
-.scratch {
-  width: 80%;
-  height: 200px;
-  background: #999;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.5rem;
-  cursor: pointer;
-  z-index: 10;
-}
-
-.final {
-  height: 100vh;
-  background: linear-gradient(135deg, #ffc0cb, #ffe4e1);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-
 
 #buttons button:hover {
   background: #ff82b6;
+  transform: scale(1.05);
 }
 
 /* =====================
-   QUESTS
+   QUEST OVERLAYS
 ===================== */
-
 .quest {
   position: fixed;
   inset: 0;
   background: rgba(0,0,0,0.85);
+
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+
   z-index: 1000;
   text-align: center;
   padding: 20px;
@@ -116,12 +76,12 @@ body {
   background: #ff5fa2;
   color: white;
   font-size: 1rem;
+  cursor: pointer;
 }
 
 /* =====================
    CAPTCHA
 ===================== */
-
 .captcha-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
@@ -134,6 +94,7 @@ body {
   overflow: hidden;
   border: 3px solid transparent;
   cursor: pointer;
+  transition: transform 0.15s ease, border-color 0.15s;
 }
 
 .captcha-card img {
@@ -143,24 +104,93 @@ body {
 
 .captcha-card.active {
   border-color: #ff5fa2;
-  transform: scale(0.96);
+  transform: scale(0.95);
 }
 
 /* =====================
-   ACTOR
+   ACTOR SCREEN
 ===================== */
-
 .quest img {
   max-width: 250px;
   border-radius: 20px;
   margin-bottom: 20px;
 }
+
+/* =====================
+   GIFT
+===================== */
+.gift {
+  position: fixed;
+  inset: 0;
+  z-index: 900;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.gift-box {
+  font-size: 5rem;
+  cursor: pointer;
+  user-select: none;
+}
+
+.gift-box.shake {
+  animation: shake 0.4s;
+}
+
+@keyframes shake {
+  0% { transform: rotate(0); }
+  25% { transform: rotate(-5deg); }
+  50% { transform: rotate(5deg); }
+  75% { transform: rotate(-5deg); }
+  100% { transform: rotate(0); }
+}
+
+/* =====================
+   FINAL / VALENTINE SCREEN
+===================== */
+.final {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+
+  background: linear-gradient(135deg, #ffc0cb, #ffe4e1);
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  text-align: center;
+  color: #b3005e;
+  overflow: hidden;
+}
+
+.final h1 {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+.final p {
+  font-size: 1.2rem;
+}
+
+.final .hearts {
+  font-size: 2rem;
+  margin-top: 1.5rem;
+}
+
+/* =====================
+   FALLING HEARTS & FLOWERS
+===================== */
 .fall {
   position: fixed;
   top: -50px;
   pointer-events: none;
   animation: fall linear forwards;
-  z-index: 999;
+  z-index: 3000;
 }
 
 @keyframes fall {
@@ -169,12 +199,11 @@ body {
     opacity: 0;
   }
 }
-.fall.heart {
-  font-size: 24px;
-}
 
-.fall.flower {
+.fall.heart {
   font-size: 26px;
 }
 
-
+.fall.flower {
+  font-size: 28px;
+}
