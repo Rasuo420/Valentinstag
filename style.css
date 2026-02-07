@@ -155,3 +155,26 @@ body {
   border-radius: 20px;
   margin-bottom: 20px;
 }
+.fall {
+  position: fixed;
+  top: -50px;
+  pointer-events: none;
+  animation: fall linear forwards;
+  z-index: 999;
+}
+
+@keyframes fall {
+  to {
+    transform: translateY(110vh);
+    opacity: 0;
+  }
+}
+.fall.heart {
+  font-size: 24px;
+}
+
+.fall.flower {
+  font-size: 26px;
+}
+
+
