@@ -6,6 +6,10 @@ const music = document.getElementById("bgMusic");
 vinylStart.volume = 0.8;
 music.volume = 0.35;
 
+/* =======================
+   DIALOG
+======================= */
+
 const dialog = [
   {
     text: "Hey du… ja genau du 👀",
@@ -19,7 +23,7 @@ const dialog = [
     text: "Ich wette, du fragst dich, was hier gerade passiert.",
     buttons: [
       { label: "Ja", next: 3 },
-      { label: "Nein", next: "popupGame" }
+      { label: "Nein", next: "miniQuest" }
     ]
   },
   {
@@ -39,6 +43,10 @@ const dialog = [
 const dialogEl = document.getElementById("dialog");
 const buttonsEl = document.getElementById("buttons");
 
+/* =======================
+   TYPEWRITER
+======================= */
+
 function typeText(text, element) {
   element.textContent = "";
   let i = 0;
@@ -49,6 +57,10 @@ function typeText(text, element) {
     if (i >= text.length) clearInterval(interval);
   }, 35);
 }
+
+/* =======================
+   RENDER
+======================= */
 
 function renderStep(index) {
   const step = dialog[index];
@@ -62,7 +74,7 @@ function renderStep(index) {
 
     button.onclick = () => {
 
-      // 🔊 AUDIO – nur beim ersten Klick
+      // 🔊 Audio nur einmal starten
       if (!audioStarted) {
         audioStarted = true;
 
@@ -75,18 +87,15 @@ function renderStep(index) {
         }, 700);
       }
 
-      // 😈 Popup-Game
-      if (btn.next === "popupGame") {
-        startPopupGame();
+      // 😈 Mini Quest starten
+      if (btn.next === "miniQuest") {
+        questStep = 0;
+        showQuestStep();
         return;
       }
 
-      // 👉 letzter Dialog
-      if (btn.next === null) {
-        return;
-      }
+      if (btn.next === null) return;
 
-      // 👉 normal weiter
       renderStep(btn.next);
     };
 
@@ -94,34 +103,147 @@ function renderStep(index) {
   });
 }
 
-// 😈 MINI-GAME: Popups wegklicken
-function startPopupGame() {
-  let remaining = 5;
+/* =======================
+   QUEST FLOW
+======================= */
 
-  for (let i = 0; i < 5; i++) {
-    const popup = document.createElement("div");
-    popup.className = "popup";
-    popup.textContent = "Okay… dann klick mich weg 😅";
+let questStep = 0;
 
-    popup.style.left = Math.random() * 70 + "vw";
-    popup.style.top = Math.random() * 70 + "vh";
+function showQuestStep() {
+  clearQuest();
 
-    const close = document.createElement("button");
-    close.textContent = "✖";
+  if (questStep === 0) showClosePopup();
+  if (questStep === 1) showCaptcha();
+  if (questStep === 2) showEscapeQuestion();
+  if (questStep === 3) showActorScreen();
+}
 
-    close.onclick = () => {
-      popup.remove();
-      remaining--;
+function clearQuest() {
+  document.querySelectorAll(".quest").forEach(e => e.remove());
+}
 
-      if (remaining === 0) {
-        renderStep(5);
+/* =======================
+   QUEST 1 – POPUP
+======================= */
+
+function showClosePopup() {
+  const box = document.createElement("div");
+  box.className = "quest popup";
+
+  box.innerHTML = `
+    <p>ok… dann klick mich weg 😜</p>
+    <button>X</button>
+  `;
+
+  box.querySelector("button").onclick = () => {
+    questStep++;
+    showQuestStep();
+  };
+
+  document.body.appendChild(box);
+}
+
+/* =======================
+   QUEST 2 – CAPTCHA
+======================= */
+
+function showCaptcha() {
+  const items = [
+    { name: "Volvos", img: "images/volvo.jpg" },
+    { name: "Katzen", img: "images/katzen.jpg" },
+    { name: "Gitarren", img: "images/gitarre.jpg" },
+    { name: "Rock am Ring", img: "images/rockamring.jpg" },
+    { name: "Yoga", img: "images/yoga.jpg" }
+  ];
+
+  let selected = new Set();
+
+  const box = document.createElement("div");
+  box.className = "quest captcha";
+
+  box.innerHTML = `<p>Wähle alles aus, was du magst 😌</p>`;
+
+  const grid = document.createElement("div");
+  grid.className = "captcha-grid";
+
+  items.forEach(item => {
+    const card = document.createElement("div");
+    card.className = "captcha-card";
+
+    const img = document.createElement("img");
+    img.src = item.img;
+    img.alt = item.name;
+
+    card.appendChild(img);
+
+    card.onclick = () => {
+      card.classList.add("active");
+      selected.add(item.name);
+
+      if (selected.size === items.length) {
+        questStep++;
+        showQuestStep();
       }
     };
 
-    popup.appendChild(close);
-    document.body.appendChild(popup);
-  }
+    grid.appendChild(card);
+  });
+
+  box.appendChild(grid);
+  document.body.appendChild(box);
 }
 
-// 🚀 Start
+/* =======================
+   QUEST 3 – ESCAPE ROOM
+======================= */
+
+function showEscapeQuestion() {
+  const box = document.createElement("div");
+  box.className = "quest";
+
+  box.innerHTML = `
+    <p>In welchem Escape Room waren wir gemeinsam?</p>
+    <button id="wrong">Da Vinci</button>
+    <button id="right">Atlantis</button>
+    <p id="hint"></p>
+  `;
+
+  box.querySelector("#wrong").onclick = () => {
+    box.querySelector("#hint").textContent = "Hmm… fast 😌";
+  };
+
+  box.querySelector("#right").onclick = () => {
+    questStep++;
+    showQuestStep();
+  };
+
+  document.body.appendChild(box);
+}
+
+/* =======================
+   QUEST 4 – ACTOR
+======================= */
+
+function showActorScreen() {
+  const box = document.createElement("div");
+  box.className = "quest";
+
+  box.innerHTML = `
+    <img src="images/charlie.jpg" alt="Charlie Hunnam">
+    <p>Bonusfrage abgeschlossen 😏</p>
+    <button>Okay… ich bin bereit</button>
+  `;
+
+  box.querySelector("button").onclick = () => {
+    clearQuest();
+    renderStep(5);
+  };
+
+  document.body.appendChild(box);
+}
+
+/* =======================
+   START
+======================= */
+
 renderStep(0);
