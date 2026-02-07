@@ -3,8 +3,8 @@ let audioStarted = false;
 const vinylStart = document.getElementById("vinylStart");
 const music = document.getElementById("bgMusic");
 
-music.volume = 0.35;
 vinylStart.volume = 0.8;
+music.volume = 0.35;
 
 const dialog = [
   {
@@ -61,19 +61,33 @@ function renderStep(index) {
     button.textContent = btn.label;
 
     button.onclick = () => {
+
+      // 🔊 AUDIO: NUR beim allerersten Klick
       if (!audioStarted) {
         audioStarted = true;
+
+        vinylStart.currentTime = 0;
         vinylStart.play().catch(() => {});
-        music.play().catch(() => {});
+
+        // kleine Vinyl-Verzögerung
+        setTimeout(() => {
+          music.currentTime = 0;
+          music.play().catch(() => {});
+        }, 700);
       }
 
-      if (btn.next !== null) {
-        renderStep(btn.next);
+      // 👉 letzter Schritt (noch kein Stop, nur Ende)
+      if (btn.next === null) {
+        return;
       }
+
+      // 👉 normal weiter
+      renderStep(btn.next);
     };
 
     buttonsEl.appendChild(button);
   });
 }
 
+// 🚀 Start
 renderStep(0);
