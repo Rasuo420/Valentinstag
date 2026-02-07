@@ -3,13 +3,12 @@ let questStep = 0;
 let questIntroText = "";
 
 const vinylStart = document.getElementById("vinylStart");
-const music = document.getElementById("bgMusic");
-const vinylStop = document.getElementById("vinylStop");
-
+const vinylStop  = document.getElementById("vinylStop");
+const music      = document.getElementById("bgMusic");
 
 vinylStart.volume = 0.8;
-vinylStop.volume = 0.8;
-music.volume = 0.35;
+vinylStop.volume  = 0.8;
+music.volume      = 0.35;
 
 /* =====================
    DIALOG DATA
