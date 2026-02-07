@@ -274,6 +274,29 @@ function startValentineRain() {
     el.addEventListener("animationend", () => el.remove());
   }, 300);
 }
+function createFallingItem() {
+  const item = document.createElement("div");
+  item.classList.add("fall");
+
+  const isHeart = Math.random() > 0.5;
+  item.classList.add(isHeart ? "heart" : "flower");
+  item.textContent = isHeart ? "❤️" : "🌸";
+
+  // 🌧️ Variationen
+  item.style.left = Math.random() * 100 + "vw";
+  const duration = 4 + Math.random() * 5; // 4–9 Sekunden
+  const size = 18 + Math.random() * 18;   // 18–36px
+
+  item.style.animationDuration = duration + "s";
+  item.style.fontSize = size + "px";
+  item.style.opacity = 0.6 + Math.random() * 0.4;
+
+  document.body.appendChild(item);
+
+  item.addEventListener("animationend", () => {
+    item.remove();
+  });
+}
 
 /* =====================
    START
