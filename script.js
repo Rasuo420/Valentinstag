@@ -251,8 +251,6 @@ function startGift() {
 let rainInterval;
 
 function showFinalScreen() {
-  document.body.className = "valentine-body";
-
   document.body.innerHTML = `
     <div class="final">
       <h1>Happy Valentinstag ❤️</h1>
