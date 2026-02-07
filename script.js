@@ -1,14 +1,12 @@
 let audioStarted = false;
+let questStep = 0;
+let questIntroText = "";
 
 const vinylStart = document.getElementById("vinylStart");
 const music = document.getElementById("bgMusic");
 
 vinylStart.volume = 0.8;
 music.volume = 0.35;
-
-/* =======================
-   DIALOG
-======================= */
 
 const dialog = [
   {
@@ -22,8 +20,8 @@ const dialog = [
   {
     text: "Ich wette, du fragst dich, was hier gerade passiert.",
     buttons: [
-      { label: "Ja", next: 3 },
-      { label: "Nein", next: "miniQuest" }
+      { label: "Ja", next: "miniQuestSoft" },
+      { label: "Nein", next: "miniQuestTease" }
     ]
   },
   {
@@ -43,10 +41,9 @@ const dialog = [
 const dialogEl = document.getElementById("dialog");
 const buttonsEl = document.getElementById("buttons");
 
-/* =======================
+/* =====================
    TYPEWRITER
-======================= */
-
+===================== */
 function typeText(text, element) {
   element.textContent = "";
   let i = 0;
@@ -58,10 +55,9 @@ function typeText(text, element) {
   }, 35);
 }
 
-/* =======================
-   RENDER
-======================= */
-
+/* =====================
+   DIALOG
+===================== */
 function renderStep(index) {
   const step = dialog[index];
   buttonsEl.innerHTML = "";
@@ -74,23 +70,25 @@ function renderStep(index) {
 
     button.onclick = () => {
 
-      // 🔊 Audio nur einmal starten
+      // 🔊 Audio nur beim ersten Klick
       if (!audioStarted) {
         audioStarted = true;
-
         vinylStart.currentTime = 0;
         vinylStart.play().catch(() => {});
-
         setTimeout(() => {
           music.currentTime = 0;
           music.play().catch(() => {});
         }, 700);
       }
 
-      // 😈 Mini Quest starten
-      if (btn.next === "miniQuest") {
-        questStep = 0;
-        showQuestStep();
+      // 😈 MINI QUEST
+      if (btn.next === "miniQuestSoft") {
+        startMiniQuest("soft");
+        return;
+      }
+
+      if (btn.next === "miniQuestTease") {
+        startMiniQuest("tease");
         return;
       }
 
@@ -103,11 +101,19 @@ function renderStep(index) {
   });
 }
 
-/* =======================
-   QUEST FLOW
-======================= */
+/* =====================
+   MINI QUEST FLOW
+===================== */
+function startMiniQuest(mode) {
+  questStep = 0;
 
-let questStep = 0;
+  questIntroText =
+    mode === "soft"
+      ? "Dachte ich mir 😌 Dann spiel kurz mit mir."
+      : "Ach ja? 😏 Dann lass uns das kurz testen.";
+
+  showQuestStep();
+}
 
 function showQuestStep() {
   clearQuest();
@@ -122,17 +128,16 @@ function clearQuest() {
   document.querySelectorAll(".quest").forEach(e => e.remove());
 }
 
-/* =======================
-   QUEST 1 – POPUP
-======================= */
-
+/* =====================
+   QUEST STEPS
+===================== */
 function showClosePopup() {
   const box = document.createElement("div");
-  box.className = "quest popup";
+  box.className = "quest";
 
   box.innerHTML = `
-    <p>ok… dann klick mich weg 😜</p>
-    <button>X</button>
+    <p>${questIntroText}</p>
+    <button>Okay 😌</button>
   `;
 
   box.querySelector("button").onclick = () => {
@@ -143,10 +148,6 @@ function showClosePopup() {
   document.body.appendChild(box);
 }
 
-/* =======================
-   QUEST 2 – CAPTCHA
-======================= */
-
 function showCaptcha() {
   const items = [
     { name: "Volvos", img: "volvo.png" },
@@ -154,8 +155,8 @@ function showCaptcha() {
     { name: "Katzen2", img: "pablo.jpeg" },
     { name: "Gitarren", img: "gitarre.avif" },
     { name: "Rock am Ring", img: "rockamring.jfif" },
-    {name : "Luca", img: "ich.jpeg"}
-    
+    {name: "Felina", img: "felina.jpeg"},
+    { name: "Ich", img: "ich.jpeg }
   ];
 
   let selected = new Set();
@@ -195,10 +196,6 @@ function showCaptcha() {
   document.body.appendChild(box);
 }
 
-/* =======================
-   QUEST 3 – ESCAPE ROOM
-======================= */
-
 function showEscapeQuestion() {
   const box = document.createElement("div");
   box.className = "quest";
@@ -222,10 +219,6 @@ function showEscapeQuestion() {
   document.body.appendChild(box);
 }
 
-/* =======================
-   QUEST 4 – ACTOR
-======================= */
-
 function showActorScreen() {
   const box = document.createElement("div");
   box.className = "quest";
@@ -244,8 +237,7 @@ function showActorScreen() {
   document.body.appendChild(box);
 }
 
-/* =======================
+/* =====================
    START
-======================= */
-
+===================== */
 renderStep(0);
