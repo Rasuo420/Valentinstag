@@ -2,9 +2,9 @@ let audioStarted = false;
 let questStep = 0;
 let questIntroText = "";
 
-const vinylStart = document.getElementById("vinylStart");
-const vinylStop = document.getElementById("vinylStop");
-const music = document.getElementById("bgMusic");
+const vinylStart = document.getElementById("vinylStart.mp3");
+const vinylStop = document.getElementById("vinylStop.mp3");
+const music = document.getElementById("bgMusic.mp3");
 
 vinylStart.volume = 0.8;
 vinylStop.volume = 0.8;
