@@ -240,6 +240,40 @@ function showActorScreen() {
 
   document.body.appendChild(box);
 }
+
+let rainInterval = null;
+
+function startValentineRain() {
+  rainInterval = setInterval(() => {
+    createFallingItem();
+  }, 300); // alle 300ms ein Teil
+}
+
+function stopValentineRain() {
+  clearInterval(rainInterval);
+}
+
+function createFallingItem() {
+  const item = document.createElement("div");
+  item.classList.add("fall");
+
+  // 🌸 oder ❤️ zufällig
+  const isHeart = Math.random() > 0.5;
+
+  item.classList.add(isHeart ? "heart" : "flower");
+  item.textContent = isHeart ? "❤️" : "🌸";
+
+  // Zufällige Position & Dauer
+  item.style.left = Math.random() * 100 + "vw";
+  item.style.animationDuration = 4 + Math.random() * 3 + "s";
+
+  document.body.appendChild(item);
+
+  // Aufräumen
+  item.addEventListener("animationend", () => {
+    item.remove();
+  });
+}
 function startGift() {
   buttonsEl.innerHTML = "";
   dialogEl.textContent = "Okay… dann ist es Zeit 😌";
@@ -278,6 +312,17 @@ function showFinalScreen() {
     </div>
   `;
 }
+function showValentineScreen() {
+  document.body.innerHTML = `
+    <div class="valentine">
+      <h1>Happy Valentinstag ❤️</h1>
+      <p>Ich bin froh, dass es dich gibt.</p>
+    </div>
+  `;
+
+  startValentineRain();
+}
+
 /* =====================
    START
 ===================== */
