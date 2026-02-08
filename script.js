@@ -1,7 +1,11 @@
 let audioStarted = false;
 let questStep = 0;
 let questIntroText = "";
+let typeInterval = null;
 
+/* =====================
+   AUDIO
+===================== */
 const vinylStart = document.getElementById("vinylStart");
 const music      = document.getElementById("bgMusic");
 const vinylStop  = document.getElementById("vinylStop");
@@ -43,20 +47,25 @@ const dialog = [
   }
 ];
 
-const dialogEl = document.getElementById("dialog");
+const dialogEl  = document.getElementById("dialog");
 const buttonsEl = document.getElementById("buttons");
 
 /* =====================
-   TYPEWRITER
+   TYPEWRITER (SAFE)
 ===================== */
 function typeText(text, element) {
+  if (typeInterval) clearInterval(typeInterval);
+
   element.textContent = "";
   let i = 0;
 
-  const interval = setInterval(() => {
+  typeInterval = setInterval(() => {
     element.textContent += text[i];
     i++;
-    if (i >= text.length) clearInterval(interval);
+    if (i >= text.length) {
+      clearInterval(typeInterval);
+      typeInterval = null;
+    }
   }, 35);
 }
 
@@ -74,30 +83,20 @@ function renderStep(index) {
 
     button.onclick = () => {
 
-      // 🔊 Start music once
+      /* 🔊 start audio once */
       if (!audioStarted) {
         audioStarted = true;
         vinylStart.currentTime = 0;
-        vinylStart.play().catch(()=>{});
+        vinylStart.play().catch(() => {});
         setTimeout(() => {
-          music.play().catch(()=>{});
+          music.currentTime = 0;
+          music.play().catch(() => {});
         }, 700);
       }
 
-      if (btn.next === "miniQuestSoft") {
-        startMiniQuest("soft");
-        return;
-      }
-
-      if (btn.next === "miniQuestTease") {
-        startMiniQuest("tease");
-        return;
-      }
-
-      if (btn.next === "gift") {
-        startGift();
-        return;
-      }
+      if (btn.next === "miniQuestSoft") return startMiniQuest("soft");
+      if (btn.next === "miniQuestTease") return startMiniQuest("tease");
+      if (btn.next === "gift") return startGift();
 
       renderStep(btn.next);
     };
@@ -107,7 +106,7 @@ function renderStep(index) {
 }
 
 /* =====================
-   MINI QUEST
+   MINI QUEST FLOW
 ===================== */
 function startMiniQuest(mode) {
   questStep = 0;
@@ -130,6 +129,9 @@ function clearQuest() {
   document.querySelectorAll(".quest").forEach(e => e.remove());
 }
 
+/* =====================
+   QUEST STEPS
+===================== */
 function showClosePopup() {
   const box = document.createElement("div");
   box.className = "quest";
@@ -151,7 +153,7 @@ function showCaptcha() {
     "felina.jpeg","aquarius.jpg","ich.jpeg"
   ];
 
-  let selected = new Set();
+  const selected = new Set();
   const box = document.createElement("div");
   box.className = "quest captcha";
   box.innerHTML = "<p>Wähle alles aus, was du magst 😌</p>";
@@ -159,19 +161,22 @@ function showCaptcha() {
   const grid = document.createElement("div");
   grid.className = "captcha-grid";
 
-  items.forEach(imgName => {
+  items.forEach(img => {
     const card = document.createElement("div");
     card.className = "captcha-card";
-    card.innerHTML = `<img src="${imgName}">`;
+    card.innerHTML = `<img src="${img}">`;
 
     card.onclick = () => {
+      if (card.classList.contains("active")) return;
       card.classList.add("active");
-      selected.add(imgName);
+      selected.add(img);
+
       if (selected.size === items.length) {
         questStep++;
         showQuestStep();
       }
     };
+
     grid.appendChild(card);
   });
 
@@ -188,13 +193,16 @@ function showEscapeQuestion() {
     <button id="right">Atlantis</button>
     <p id="hint"></p>
   `;
+
   box.querySelector("#wrong").onclick = () => {
     box.querySelector("#hint").textContent = "Hmm… fast 😌";
   };
+
   box.querySelector("#right").onclick = () => {
     questStep++;
     showQuestStep();
   };
+
   document.body.appendChild(box);
 }
 
@@ -217,7 +225,14 @@ function showActorScreen() {
    GIFT + VINYL STOP
 ===================== */
 function startGift() {
-  document.getElementById("game").style.display = "none";
+  /* 🔥 alles töten */
+  if (typeInterval) {
+    clearInterval(typeInterval);
+    typeInterval = null;
+  }
+
+  const game = document.getElementById("game");
+  if (game) game.remove();
 
   const box = document.createElement("div");
   box.className = "gift";
@@ -236,6 +251,9 @@ function startGift() {
     gift.classList.add("shake");
 
     if (clicks >= 5) {
+      music.pause();
+      vinylStop.currentTime = 0;
+      vinylStop.play().catch(() => {});
       showFinalScreen();
     }
   };
@@ -245,16 +263,15 @@ function startGift() {
   document.body.appendChild(box);
 }
 
-
 /* =====================
-   FINAL SCREEN + RAIN
+   FINAL + RAIN
 ===================== */
-let rainInterval;
+let rainInterval = null;
 
 function showFinalScreen() {
   document.body.innerHTML = `
     <div class="final">
-      <h1>Happy Valentinstag ❤️</h1>
+      <h1 class="pulse">Happy Valentinstag ❤️</h1>
       <p>Ich bin sehr froh, dass es dich gibt.</p>
     </div>
   `;
@@ -263,38 +280,25 @@ function showFinalScreen() {
 }
 
 function startValentineRain() {
-  rainInterval = setInterval(() => {
-    const el = document.createElement("div");
-    el.className = "fall";
-    el.textContent = Math.random() > 0.5 ? "❤️" : "🌸";
-    el.style.left = Math.random() * 100 + "vw";
-    el.style.animationDuration = 4 + Math.random() * 3 + "s";
-    document.body.appendChild(el);
-    el.addEventListener("animationend", () => el.remove());
-  }, 300);
+  if (rainInterval) clearInterval(rainInterval);
+
+  rainInterval = setInterval(createFallingItem, 280);
 }
+
 function createFallingItem() {
   const item = document.createElement("div");
-  item.classList.add("fall");
+  item.className = "fall";
 
   const isHeart = Math.random() > 0.5;
-  item.classList.add(isHeart ? "heart" : "flower");
   item.textContent = isHeart ? "❤️" : "🌸";
 
-  // 🌧️ Variationen
   item.style.left = Math.random() * 100 + "vw";
-  const duration = 4 + Math.random() * 5; // 4–9 Sekunden
-  const size = 18 + Math.random() * 18;   // 18–36px
-
-  item.style.animationDuration = duration + "s";
-  item.style.fontSize = size + "px";
+  item.style.animationDuration = 3 + Math.random() * 6 + "s";
+  item.style.fontSize = 18 + Math.random() * 22 + "px";
   item.style.opacity = 0.6 + Math.random() * 0.4;
 
   document.body.appendChild(item);
-
-  item.addEventListener("animationend", () => {
-    item.remove();
-  });
+  item.addEventListener("animationend", () => item.remove());
 }
 
 /* =====================
