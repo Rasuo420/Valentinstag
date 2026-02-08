@@ -217,33 +217,34 @@ function showActorScreen() {
    GIFT + VINYL STOP
 ===================== */
 function startGift() {
-  dialogEl.textContent = "";
-  buttonsEl.innerHTML = "";
-
-  document.querySelectorAll(".gift").forEach(e => e.remove());
+  document.getElementById("game").style.display = "none";
 
   const box = document.createElement("div");
   box.className = "gift";
 
   let clicks = 0;
+
   const gift = document.createElement("div");
   gift.className = "gift-box";
   gift.textContent = "🎁";
+
+  const hint = document.createElement("p");
+  hint.textContent = "Mach es auf ❤️";
 
   gift.onclick = () => {
     clicks++;
     gift.classList.add("shake");
 
-   if (clicks === 5) {
-  vinylStop.currentTime = 0;
-  vinylStop.play().catch(() => {});
-  setTimeout(showFinalScreen, 500);
-}
+    if (clicks >= 5) {
+      showFinalScreen();
+    }
   };
 
   box.appendChild(gift);
+  box.appendChild(hint);
   document.body.appendChild(box);
 }
+
 
 /* =====================
    FINAL SCREEN + RAIN
