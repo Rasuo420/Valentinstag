@@ -253,9 +253,9 @@ function startGift() {
     gift.classList.add("shake");
 
     if (clicks >= 5) {
-      #music.pause();
-      #vinylStop.currentTime = 0;
-      #vinylStop.play().catch(() => {});
+      //music.pause();
+      //vinylStop.currentTime = 0;
+      //vinylStop.play().catch(() => {});
       showFinalScreen();
     }
   };
