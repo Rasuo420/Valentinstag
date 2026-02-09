@@ -4,7 +4,7 @@ let questIntroText = "";
 let typeInterval = null;
 
 /* =====================
-   AUDIO
+   AUDIO d
 ===================== */
 const vinylStart = document.getElementById("vinylStart");
 const music      = document.getElementById("bgMusic");
