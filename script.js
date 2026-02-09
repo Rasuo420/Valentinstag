@@ -18,6 +18,7 @@ vinylStop.volume  = 0.8;
    DIALOG DATA
 ===================== */
 const dialog = [
+   startValentineRain();
   {
     text: "Hey du… ja genau du 👀",
     buttons: [{ label: "Okay?", next: 1 }]
