@@ -17,8 +17,9 @@ vinylStop.volume  = 0.8;
 /* =====================
    DIALOG DATA
 ===================== */
+startValentineRain();
 const dialog = [
-   startValentineRain();
+   
   {
     text: "Hey du… ja genau du 👀",
     buttons: [{ label: "Okay?", next: 1 }]
@@ -252,9 +253,9 @@ function startGift() {
     gift.classList.add("shake");
 
     if (clicks >= 5) {
-      music.pause();
-      vinylStop.currentTime = 0;
-      vinylStop.play().catch(() => {});
+      #music.pause();
+      #vinylStop.currentTime = 0;
+      #vinylStop.play().catch(() => {});
       showFinalScreen();
     }
   };
