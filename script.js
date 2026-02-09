@@ -17,7 +17,27 @@ vinylStop.volume  = 0.8;
 /* =====================
    DIALOG DATA
 ===================== */
+function startMainRain() {
+  if (rainInterval) clearInterval(rainInterval);
 
+  rainInterval = setInterval(createFallingItem, 280);
+}
+
+function createFallingItem2() {
+  const item = document.createElement("div");
+  item.className = "fall";
+
+  const isHeart = Math.random() > 0.5;
+  item.textContent = isHeart ? "❤️" : "🌸" : "🐾" : "🤘🏼" :"😺" :"🏍" :"♎" : "🎸" : "🎶" ;
+
+  item.style.left = Math.random() * 100 + "vw";
+  item.style.animationDuration = 3 + Math.random() * 6 + "s";
+  item.style.fontSize = 18 + Math.random() * 22 + "px";
+  item.style.opacity = 0.6 + Math.random() * 0.4;
+
+  document.body.appendChild(item);
+  item.addEventListener("animationend", () => item.remove());
+}
 const dialog = [
    
   {
