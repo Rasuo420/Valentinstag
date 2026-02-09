@@ -150,7 +150,7 @@ function showCaptcha() {
   const items = [
     "volvo.png","carlos.jpeg","pablo.jpeg",
     "gitarre.avif","rockamring.jfif",
-    "felina.jpeg","aquarius.jpg","ich.jpeg"
+    "felina.jpeg","aquarius.jpg","charlie.jfif"
   ];
 
   const selected = new Set();
@@ -210,8 +210,8 @@ function showActorScreen() {
   const box = document.createElement("div");
   box.className = "quest";
   box.innerHTML = `
-    <img src="charlie.jfif">
-    <p>Bonusfrage abgeschlossen 😏</p>
+    <img src="ich.jpeg">
+    <p>Oh wups 👀</p>
     <button>Weiter ❤️</button>
   `;
   box.querySelector("button").onclick = () => {
