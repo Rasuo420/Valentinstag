@@ -4,15 +4,13 @@ let questIntroText = "";
 let typeInterval = null;
 
 /* =====================
-   AUDIO d
+   AUDIO
 ===================== */
 const vinylStart = document.getElementById("vinylStart");
 const music      = document.getElementById("bgMusic");
-const vinylStop  = document.getElementById("vinylStop");
 
 vinylStart.volume = 0.8;
-music.volume      = 0.35;
-vinylStop.volume  = 0.8;
+music.volume      = 0.35; // normale Lautstärke während Flow
 
 /* =====================
    MAIN RAIN (INTRO)
@@ -107,7 +105,7 @@ function typeText(text, element) {
 ===================== */
 function renderStep(index) {
 
-  // 🌧️ MAIN RAIN STARTET BEIM ERSTEN SCREEN
+  // 🌧️ Start-Regen beim ersten Screen
   if (index === 0) {
     startMainRain();
   }
@@ -305,8 +303,11 @@ let rainInterval = null;
 
 function showFinalScreen() {
 
-  // 🛑 Main-Regen stoppen
+  // 🌧️ Intro-Regen stoppen
   stopMainRain();
+
+  // 🎵 Musik sanft leiser, aber NICHT stoppen
+  music.volume = 0.25;
 
   document.body.innerHTML = `
     <div class="final">
@@ -320,7 +321,7 @@ function showFinalScreen() {
 
 function startValentineRain() {
   if (rainInterval) clearInterval(rainInterval);
-  rainInterval = setInterval(createFallingItem, 280);
+  rainInterval = setInterval(createFallingItem, 260);
 }
 
 function createFallingItem() {
