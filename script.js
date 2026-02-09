@@ -17,7 +17,7 @@ vinylStop.volume  = 0.8;
 /* =====================
    DIALOG DATA
 ===================== */
-startValentineRain();
+
 const dialog = [
    
   {
