@@ -15,13 +15,20 @@ music.volume      = 0.35;
 vinylStop.volume  = 0.8;
 
 /* =====================
-   DIALOG DATA
+   MAIN RAIN (INTRO)
 ===================== */
 let rainInterval2 = null;
-function startMainRain() {
-  if (rainInterval2) clearInterval(rainInterval2);
 
+function startMainRain() {
+  stopMainRain();
   rainInterval2 = setInterval(createFallingItem2, 280);
+}
+
+function stopMainRain() {
+  if (rainInterval2) {
+    clearInterval(rainInterval2);
+    rainInterval2 = null;
+  }
 }
 
 function createFallingItem2() {
@@ -39,8 +46,11 @@ function createFallingItem2() {
   document.body.appendChild(item);
   item.addEventListener("animationend", () => item.remove());
 }
+
+/* =====================
+   DIALOG DATA
+===================== */
 const dialog = [
-   startMainRain();
   {
     text: "Hey du… ja genau du 👀",
     buttons: [{ label: "Okay?", next: 1 }]
@@ -74,7 +84,7 @@ const dialogEl  = document.getElementById("dialog");
 const buttonsEl = document.getElementById("buttons");
 
 /* =====================
-   TYPEWRITER (SAFE)
+   TYPEWRITER
 ===================== */
 function typeText(text, element) {
   if (typeInterval) clearInterval(typeInterval);
@@ -96,6 +106,12 @@ function typeText(text, element) {
    DIALOG FLOW
 ===================== */
 function renderStep(index) {
+
+  // 🌧️ MAIN RAIN STARTET BEIM ERSTEN SCREEN
+  if (index === 0) {
+    startMainRain();
+  }
+
   const step = dialog[index];
   buttonsEl.innerHTML = "";
   typeText(step.text, dialogEl);
@@ -106,7 +122,7 @@ function renderStep(index) {
 
     button.onclick = () => {
 
-      /* 🔊 start audio once */
+      /* 🔊 Audio nur einmal starten */
       if (!audioStarted) {
         audioStarted = true;
         vinylStart.currentTime = 0;
@@ -153,7 +169,7 @@ function clearQuest() {
 }
 
 /* =====================
-   QUEST STEPS
+   QUEST SCREENS
 ===================== */
 function showClosePopup() {
   const box = document.createElement("div");
@@ -245,10 +261,9 @@ function showActorScreen() {
 }
 
 /* =====================
-   GIFT + VINYL STOP
+   GIFT
 ===================== */
 function startGift() {
-  /* 🔥 alles töten */
   if (typeInterval) {
     clearInterval(typeInterval);
     typeInterval = null;
@@ -274,9 +289,6 @@ function startGift() {
     gift.classList.add("shake");
 
     if (clicks >= 5) {
-      //music.pause();
-      //vinylStop.currentTime = 0;
-      //vinylStop.play().catch(() => {});
       showFinalScreen();
     }
   };
@@ -287,11 +299,15 @@ function startGift() {
 }
 
 /* =====================
-   FINAL + RAIN
+   FINAL + VALENTINE RAIN
 ===================== */
 let rainInterval = null;
 
 function showFinalScreen() {
+
+  // 🛑 Main-Regen stoppen
+  stopMainRain();
+
   document.body.innerHTML = `
     <div class="final">
       <h1 class="pulse">Happy Valentinstag ❤️</h1>
@@ -304,7 +320,6 @@ function showFinalScreen() {
 
 function startValentineRain() {
   if (rainInterval) clearInterval(rainInterval);
-
   rainInterval = setInterval(createFallingItem, 280);
 }
 
@@ -312,8 +327,7 @@ function createFallingItem() {
   const item = document.createElement("div");
   item.className = "fall";
 
-  const isHeart = Math.random() > 0.5;
-  item.textContent = isHeart ? "❤️" : "🌸";
+  item.textContent = Math.random() > 0.5 ? "❤️" : "🌸";
 
   item.style.left = Math.random() * 100 + "vw";
   item.style.animationDuration = 3 + Math.random() * 6 + "s";
