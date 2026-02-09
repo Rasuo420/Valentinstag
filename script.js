@@ -39,7 +39,7 @@ function createFallingItem2() {
   item.addEventListener("animationend", () => item.remove());
 }
 const dialog = [
-   
+   startMainRain();
   {
     text: "Hey du… ja genau du 👀",
     buttons: [{ label: "Okay?", next: 1 }]
