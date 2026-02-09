@@ -27,8 +27,8 @@ function createFallingItem2() {
   const item = document.createElement("div");
   item.className = "fall";
 
-  const isHeart = Math.random() > 0.5;
-  item.textContent = isHeart ? "❤️" : "🌸" : "🐾" : "🤘🏼" :"😺" :"🏍" :"♎" : "🎸" : "🎶" ;
+  const emojis = ["❤️", "🌸", "🐾", "🤘🏼", "😺", "🏍", "♎", "🎸", "🎶"];
+  item.textContent = emojis[Math.floor(Math.random() * emojis.length)];
 
   item.style.left = Math.random() * 100 + "vw";
   item.style.animationDuration = 3 + Math.random() * 6 + "s";
