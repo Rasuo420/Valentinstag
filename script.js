@@ -17,10 +17,11 @@ vinylStop.volume  = 0.8;
 /* =====================
    DIALOG DATA
 ===================== */
+let rainInterval2 = null;
 function startMainRain() {
-  if (rainInterval) clearInterval(rainInterval);
+  if (rainInterval2) clearInterval(rainInterval2);
 
-  rainInterval = setInterval(createFallingItem, 280);
+  rainInterval2 = setInterval(createFallingItem2, 280);
 }
 
 function createFallingItem2() {
