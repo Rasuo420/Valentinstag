@@ -307,14 +307,17 @@ function showFinalScreen() {
   stopMainRain();
 
   // 🎵 Musik sanft leiser, aber NICHT stoppen
-  music.volume = 0.25;
+  music.volume = Math.max(0.2, music.volume - 0.1);
 
-  document.body.innerHTML = `
-    <div class="final">
-      <h1 class="pulse">Happy Valentinstag ❤️</h1>
-      <p>Ich bin sehr froh, dass es dich gibt.</p>
-    </div>
+
+  const final = document.createElement("div");
+  final.className = "final";
+  final.innerHTML = `
+    <h1 class="pulse">Happy Valentinstag ❤️</h1>
+    <p>Ich bin sehr froh, dass es dich gibt.</p>
   `;
+
+  document.body.appendChild(final);
 
   startValentineRain();
 }
