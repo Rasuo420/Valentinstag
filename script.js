@@ -297,7 +297,23 @@ function startGift() {
   box.appendChild(hint);
   document.body.appendChild(box);
 }
+function fadeAudio(audio, targetVolume = 0.08, duration = 2500) {
+  const startVolume = audio.volume;
+  const steps = 30;
+  const stepTime = duration / steps;
+  let currentStep = 0;
 
+  const fadeInterval = setInterval(() => {
+    currentStep++;
+    audio.volume =
+      startVolume + (targetVolume - startVolume) * (currentStep / steps);
+
+    if (currentStep >= steps) {
+      audio.volume = targetVolume;
+      clearInterval(fadeInterval);
+    }
+  }, stepTime);
+}
 /* =====================
    FINAL + VALENTINE RAIN
 ===================== */
@@ -307,6 +323,9 @@ function showFinalScreen() {
 
   // 🛑 Main-Regen stoppen
   stopMainRain();
+
+  // 🎵 Musik sanft leiser machen (NICHT stoppen)
+  fadeAudio(music, 0.08, 2500);
 
   document.body.innerHTML = `
     <div class="final">
