@@ -4,25 +4,15 @@ let questIntroText = "";
 let typeInterval = null;
 
 /* =====================
-   APP CONTAINER
-===================== */
-const app = document.getElementById("app");
-
-/* =====================
    AUDIO
 ===================== */
 const vinylStart = document.getElementById("vinylStart");
-const music = document.getElementById("bgMusic");
+const music      = document.getElementById("bgMusic");
+const vinylStop  = document.getElementById("vinylStop");
 
 vinylStart.volume = 0.8;
-music.volume = 0.35;
-
-/* Safari / Mobile Audio-Lock */
-document.addEventListener("click", () => {
-  if (audioStarted && music.paused) {
-    music.play().catch(() => {});
-  }
-});
+music.volume      = 0.35;
+vinylStop.volume  = 0.8;
 
 /* =====================
    MAIN RAIN (INTRO)
@@ -53,7 +43,7 @@ function createFallingItem2() {
   item.style.fontSize = 18 + Math.random() * 22 + "px";
   item.style.opacity = 0.6 + Math.random() * 0.4;
 
-  app.appendChild(item);
+  document.body.appendChild(item);
   item.addEventListener("animationend", () => item.remove());
 }
 
@@ -61,8 +51,14 @@ function createFallingItem2() {
    DIALOG DATA
 ===================== */
 const dialog = [
-  { text: "Hey du… ja genau du 👀", buttons: [{ label: "Okay?", next: 1 }] },
-  { text: "Wie ich sehe, hat der QR-Code funktioniert 😏", buttons: [{ label: "Sehr gut!", next: 2 }] },
+  {
+    text: "Hey du… ja genau du 👀",
+    buttons: [{ label: "Okay?", next: 1 }]
+  },
+  {
+    text: "Wie ich sehe, hat der QR-Code funktioniert 😏",
+    buttons: [{ label: "Sehr gut!", next: 2 }]
+  },
   {
     text: "Ich wette, du fragst dich, was hier gerade passiert.",
     buttons: [
@@ -70,12 +66,21 @@ const dialog = [
       { label: "Nein", next: "miniQuestTease" }
     ]
   },
-  { text: "Verständlich. Bleib kurz bei mir 🖤", buttons: [{ label: "Okay", next: 5 }] },
-  { text: "Mutig. Dann schauen wir mal 😌", buttons: [{ label: "Weiter", next: 5 }] },
-  { text: "Gut. Dann lass uns anfangen.", buttons: [{ label: "Ich bin bereit ❤️", next: "gift" }] }
+  {
+    text: "Verständlich. Bleib kurz bei mir 🖤",
+    buttons: [{ label: "Okay", next: 5 }]
+  },
+  {
+    text: "Mutig. Dann schauen wir mal 😌",
+    buttons: [{ label: "Weiter", next: 5 }]
+  },
+  {
+    text: "Gut. Dann lass uns anfangen.",
+    buttons: [{ label: "Ich bin bereit ❤️", next: "gift" }]
+  }
 ];
 
-const dialogEl = document.getElementById("dialog");
+const dialogEl  = document.getElementById("dialog");
 const buttonsEl = document.getElementById("buttons");
 
 /* =====================
@@ -83,11 +88,13 @@ const buttonsEl = document.getElementById("buttons");
 ===================== */
 function typeText(text, element) {
   if (typeInterval) clearInterval(typeInterval);
+
   element.textContent = "";
   let i = 0;
 
   typeInterval = setInterval(() => {
-    element.textContent += text[i++];
+    element.textContent += text[i];
+    i++;
     if (i >= text.length) {
       clearInterval(typeInterval);
       typeInterval = null;
@@ -99,7 +106,11 @@ function typeText(text, element) {
    DIALOG FLOW
 ===================== */
 function renderStep(index) {
-  if (index === 0) startMainRain();
+
+  // 🌧️ MAIN RAIN STARTET BEIM ERSTEN SCREEN
+  if (index === 0) {
+    startMainRain();
+  }
 
   const step = dialog[index];
   buttonsEl.innerHTML = "";
@@ -110,6 +121,8 @@ function renderStep(index) {
     button.textContent = btn.label;
 
     button.onclick = () => {
+
+      /* 🔊 Audio nur einmal starten */
       if (!audioStarted) {
         audioStarted = true;
         vinylStart.currentTime = 0;
@@ -132,7 +145,7 @@ function renderStep(index) {
 }
 
 /* =====================
-   MINI QUEST
+   MINI QUEST FLOW
 ===================== */
 function startMiniQuest(mode) {
   questStep = 0;
@@ -161,12 +174,15 @@ function clearQuest() {
 function showClosePopup() {
   const box = document.createElement("div");
   box.className = "quest";
-  box.innerHTML = `<p>${questIntroText}</p><button>Okay 😌</button>`;
+  box.innerHTML = `
+    <p>${questIntroText}</p>
+    <button>Okay 😌</button>
+  `;
   box.querySelector("button").onclick = () => {
     questStep++;
     showQuestStep();
   };
-  app.appendChild(box);
+  document.body.appendChild(box);
 }
 
 function showCaptcha() {
@@ -193,6 +209,7 @@ function showCaptcha() {
       if (card.classList.contains("active")) return;
       card.classList.add("active");
       selected.add(img);
+
       if (selected.size === items.length) {
         questStep++;
         showQuestStep();
@@ -203,7 +220,7 @@ function showCaptcha() {
   });
 
   box.appendChild(grid);
-  app.appendChild(box);
+  document.body.appendChild(box);
 }
 
 function showEscapeQuestion() {
@@ -219,30 +236,38 @@ function showEscapeQuestion() {
   box.querySelector("#wrong").onclick = () => {
     box.querySelector("#hint").textContent = "Hmm… fast 😌";
   };
+
   box.querySelector("#right").onclick = () => {
     questStep++;
     showQuestStep();
   };
 
-  app.appendChild(box);
+  document.body.appendChild(box);
 }
 
 function showActorScreen() {
   const box = document.createElement("div");
   box.className = "quest";
-  box.innerHTML = `<img src="ich.jpeg"><p>Oh wups 👀</p><button>Weiter ❤️</button>`;
+  box.innerHTML = `
+    <img src="ich.jpeg">
+    <p>Oh wups 👀</p>
+    <button>Weiter ❤️</button>
+  `;
   box.querySelector("button").onclick = () => {
     clearQuest();
     renderStep(5);
   };
-  app.appendChild(box);
+  document.body.appendChild(box);
 }
 
 /* =====================
    GIFT
 ===================== */
 function startGift() {
-  if (typeInterval) clearInterval(typeInterval);
+  if (typeInterval) {
+    clearInterval(typeInterval);
+    typeInterval = null;
+  }
 
   const game = document.getElementById("game");
   if (game) game.remove();
@@ -251,6 +276,7 @@ function startGift() {
   box.className = "gift";
 
   let clicks = 0;
+
   const gift = document.createElement("div");
   gift.className = "gift-box";
   gift.textContent = "🎁";
@@ -261,12 +287,15 @@ function startGift() {
   gift.onclick = () => {
     clicks++;
     gift.classList.add("shake");
-    if (clicks >= 5) showFinalScreen();
+
+    if (clicks >= 5) {
+      showFinalScreen();
+    }
   };
 
   box.appendChild(gift);
   box.appendChild(hint);
-  app.appendChild(box);
+  document.body.appendChild(box);
 }
 
 /* =====================
@@ -275,28 +304,29 @@ function startGift() {
 let rainInterval = null;
 
 function showFinalScreen() {
-  stopMainRain();
-  music.volume = 0.25;
 
-  const final = document.createElement("div");
-  final.className = "final";
-  final.innerHTML = `
-    <h1 class="pulse">Happy Valentinstag ❤️</h1>
-    <p>Ich bin sehr froh, dass es dich gibt.</p>
+  // 🛑 Main-Regen stoppen
+  stopMainRain();
+
+  document.body.innerHTML = `
+    <div class="final">
+      <h1 class="pulse">Happy Valentinstag ❤️</h1>
+      <p>Ich bin sehr froh, dass es dich gibt.</p>
+    </div>
   `;
 
-  app.appendChild(final);
   startValentineRain();
 }
 
 function startValentineRain() {
   if (rainInterval) clearInterval(rainInterval);
-  rainInterval = setInterval(createFallingItem, 260);
+  rainInterval = setInterval(createFallingItem, 280);
 }
 
 function createFallingItem() {
   const item = document.createElement("div");
   item.className = "fall";
+
   item.textContent = Math.random() > 0.5 ? "❤️" : "🌸";
 
   item.style.left = Math.random() * 100 + "vw";
@@ -304,7 +334,7 @@ function createFallingItem() {
   item.style.fontSize = 18 + Math.random() * 22 + "px";
   item.style.opacity = 0.6 + Math.random() * 0.4;
 
-  app.appendChild(item);
+  document.body.appendChild(item);
   item.addEventListener("animationend", () => item.remove());
 }
 
