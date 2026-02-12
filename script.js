@@ -10,9 +10,32 @@ const vinylStart = document.getElementById("vinylStart");
 const music      = document.getElementById("bgMusic");
 const vinylStop  = document.getElementById("vinylStop");
 
-vinylStart.volume = 0.8;
-music.volume      = 0.35;
-vinylStop.volume  = 0.8;
+if (vinylStart) vinylStart.volume = 0.8;
+if (music) music.volume = 0.35;
+if (vinylStop) vinylStop.volume = 0.8;
+
+/* =====================
+   AUDIO FADE (NEU)
+===================== */
+function fadeAudio(audio, targetVolume = 0.08, duration = 2500) {
+  if (!audio) return;
+
+  const startVolume = audio.volume;
+  const steps = 30;
+  const stepTime = duration / steps;
+  let currentStep = 0;
+
+  const fadeInterval = setInterval(() => {
+    currentStep++;
+    audio.volume =
+      startVolume + (targetVolume - startVolume) * (currentStep / steps);
+
+    if (currentStep >= steps) {
+      audio.volume = targetVolume;
+      clearInterval(fadeInterval);
+    }
+  }, stepTime);
+}
 
 /* =====================
    MAIN RAIN (INTRO)
@@ -107,7 +130,6 @@ function typeText(text, element) {
 ===================== */
 function renderStep(index) {
 
-  // 🌧️ MAIN RAIN STARTET BEIM ERSTEN SCREEN
   if (index === 0) {
     startMainRain();
   }
@@ -122,8 +144,7 @@ function renderStep(index) {
 
     button.onclick = () => {
 
-      /* 🔊 Audio nur einmal starten */
-      if (!audioStarted) {
+      if (!audioStarted && vinylStart && music) {
         audioStarted = true;
         vinylStart.currentTime = 0;
         vinylStart.play().catch(() => {});
@@ -305,8 +326,10 @@ let rainInterval = null;
 
 function showFinalScreen() {
 
-  // 🛑 Main-Regen stoppen
   stopMainRain();
+
+  // 🎵 AUDIO FADE HIER
+  fadeAudio(music, 0.08, 2500);
 
   document.body.innerHTML = `
     <div class="final">
