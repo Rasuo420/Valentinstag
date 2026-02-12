@@ -326,7 +326,9 @@ function showFinalScreen() {
   // 🎵 AUDIO FADE HIER
   fadeAudio(music, 0.08, 2500);
 
-  document.body.innerHTML = `
+  const app = document.getElementById("app");
+if (app) {
+  app.innerHTML = `
     <div class="final">
       <h1 class="pulse">Happy Valentinstag ❤️</h1>
       <p>Ich bin sehr froh, dass es dich gibt.</p>
