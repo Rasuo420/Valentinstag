@@ -334,6 +334,7 @@ if (app) {
       <p>Ich bin sehr froh, dass es dich gibt.</p>
     </div>
   `;
+}
 
   startValentineRain();
 }
