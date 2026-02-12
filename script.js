@@ -18,22 +18,17 @@ if (vinylStop) vinylStop.volume = 0.8;
    AUDIO FADE (NEU)
 ===================== */
 function fadeAudio(audio, targetVolume = 0.08, duration = 2500) {
-  if (!audio) return;
-
   const startVolume = audio.volume;
   const steps = 30;
   const stepTime = duration / steps;
-  let currentStep = 0;
+  let step = 0;
 
-  const fadeInterval = setInterval(() => {
-    currentStep++;
+  const fade = setInterval(() => {
+    step++;
     audio.volume =
-      startVolume + (targetVolume - startVolume) * (currentStep / steps);
+      startVolume + (targetVolume - startVolume) * (step / steps);
 
-    if (currentStep >= steps) {
-      audio.volume = targetVolume;
-      clearInterval(fadeInterval);
-    }
+    if (step >= steps) clearInterval(fade);
   }, stepTime);
 }
 
